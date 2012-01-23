@@ -14,19 +14,21 @@
 				<h1>BioCloud</h1>
 			</div>
 			<div id="loginForm" align="right">
-				<a href="#">sign out</a>
+				<a href="#"> {% if user.is_authenticated %} 
+				({{ user.username }}) sign out {% else %} log in {% endif %} </a>
 			</div>
 		</div>
 		<form action="#">
 			<div id="content">
-				<div id="leftalign">
+				<div id="leftcolumn">
 					<select id="projectId">
 						<option value="hiv_treatment">Hiv treatment</option>
 					</select>
 				</div>
 
-				<div id="rightalign">
-					<a href="#">View files</a> | <a href="#">Upload file</a>
+				<div id="rightcolumn">
+					<a href="#" onclick="window.open('upload', 'windowname1', 'width=300, height=400'); return false;">
+					View / Upload files</a>
 				</div>
 				<br /> <br /> <br />
 

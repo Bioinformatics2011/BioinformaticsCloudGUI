@@ -8,7 +8,6 @@
 <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
 </head>
 <body>
-
 	<div id="wrapper">
 		<div id="header">
 			<div id="headerTitle">
@@ -18,14 +17,41 @@
 				<a href="#">sign out</a>
 			</div>
 		</div>
-		<div id="content">
-			
-		
-		</div>
-		
-		<div id="footer">
-			Footer
-		</div>
+		<form action="#">
+			<div id="content">
+				<div id="leftalign">
+					<select id="projectId">
+						<option value="hiv_treatment">Hiv treatment</option>
+					</select>
+				</div>
+
+				<div id="rightalign">
+					<a href="#">View files</a> | <a href="#">Upload file</a>
+				</div>
+				<br /> <br /> <br />
+
+				<table>
+					<tr>
+						<td>Select program</td>
+						<td>Bowtie</td>
+					</tr>
+
+					<tr>
+						<td>Select file(s)</td>
+						<td>fil1.fastq</td>
+					</tr>
+
+					<tr>
+						<td colspan="2"><textarea rows="1" cols="50" id="commandId">-parameter -commands -out SRRR.fast
+						</textarea></td>
+					</tr>
+				</table>
+			</div>
+			<div id="rightalign">
+				<input type="submit" title="Submit" />
+			</div>
+		</form>
+		<div id="footer">Footer</div>
 	</div>
 </body>
 </html>

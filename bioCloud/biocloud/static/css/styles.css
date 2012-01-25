@@ -41,6 +41,7 @@ i {
 #d_main {
 	position: relative;
 	min-width: 700px;
+	margin-bottom: 50px;
 }
 
 #d_header {
@@ -54,7 +55,7 @@ i {
 	clear: both;
 	/* continue normally */
 	position: relative;
-	margin: 50px;
+	margin: 15px;
 	width: 500px;
 }
 
@@ -70,7 +71,7 @@ i {
 }
 
 #d_activity_2 {
-	color:red;
+
 }
 
 #d_submit {

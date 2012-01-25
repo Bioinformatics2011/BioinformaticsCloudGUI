@@ -32,7 +32,7 @@ biocloud = {
     },
     programSelectorFor: function(aProgramParameterBox, sequenceNumber){
         var programSelector = $(this.programSelector).clone();
-        programSelector.attr("name", "program["+sequenceNumber+"][programName]");
+        programSelector.attr("name", "program."+sequenceNumber+".programName");
         programSelector.change(function(event){
             biocloud.updateProgramBoxFor(aProgramParameterBox,
                 event.target.value, sequenceNumber)
@@ -59,7 +59,7 @@ biocloud = {
         this.files = [];
         for(i=0; i < aProgramSpec.inputs; i++){
             this.files
-                .push(new biocloud.InputFile(i+1,
+                .push(new biocloud.InputFile(i,
                         aProgramSpec.fileNames[i]));
         }
         for(i=0; i < aProgramSpec.outputs; i++){
@@ -70,7 +70,7 @@ biocloud = {
         /* What to do about parameters? */
     },
     InputFile: function(index, name){
-        this.index = index;
+        this.index = index+1;
         this.name = name;
         this.fieldIndex = index;
     },
@@ -87,7 +87,7 @@ biocloud.Program.prototype = {
         jQuery.each(this.files, function(i, each){
             each.renderTo($("<li></li>").appendTo(aBox), id)
         })
-        this.command = $('<input type="text" class="commandline" readonly="readonly" name="program['+id+'][commandPreview]" />')
+        this.command = $('<input type="text" class="commandline" readonly="readonly" name="program.'+id+'.commandPreview" />')
             .appendTo($("<li></li>")
                 .appendTo(aBox));
     }
@@ -97,7 +97,7 @@ biocloud.Program.prototype = {
     var fileprototype = {
         renderTo: function(aBox, id){
             aBox.append(this.index + ". " + this.name + '<br />'+
-                '<input type="text" name="program['+id+'][file]['+this.fieldIndex+']"/>');
+                '<input type="text" name="program.'+id+'.file.'+this.fieldIndex+'"/>');
         }
     };
     biocloud.InputFile.prototype = fileprototype;

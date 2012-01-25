@@ -33,9 +33,12 @@ def upload_popup(request):
 
 def workflow(request):
     if request.method == 'POST': # If the form has been submitted...
-        print(request.POST.getlist('program'))
-        
-        return HttpResponse(request)
+        # Because django depends on static form, but we have a quite flexible one
+        # we try some individual (complex :-( ) solution, using DotExpandedDict
+        from django.utils.datastructures import DotExpandedDict
+        # do some escaping at this point?
+        data = DotExpandedDict(request.POST)
+        return HttpResponse(data)
     return render_to_response('biocloud/workflow.html',
         {'programs': [__importClass__(program).asJson() for program in settings.APPLICATIONS]},
         context_instance=RequestContext(request))

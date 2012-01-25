@@ -38,9 +38,9 @@ def workflow(request):
 
 def xhr_test(request):
     if request.is_ajax():
-        message = "Hello AJAX"
+        message = "some AJAX"
     else:
-        message = "Hello"
+        message = "some default message"
     return HttpResponse(message)
 
 def __importClass__(someString):

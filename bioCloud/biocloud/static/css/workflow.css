@@ -1,0 +1,25 @@
+div.program{
+    border: 2px solid black;
+    padding: 0.5em;
+    margin: 0.5em 0;
+}
+.program .parameters{
+    padding: 0.5em 0;
+    margin: 0.5em 0;
+}
+.program ul.parameters{
+    list-style-type: none;
+}
+.program .parameters li{
+    padding: 0.3em 0;
+}
+.program .removeProgram{
+    float: right;
+}
+
+.parameters input.commandline{
+    heigth: 20px;
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+}

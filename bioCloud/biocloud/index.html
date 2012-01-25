@@ -5,55 +5,111 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>BioCloud</title>
-<link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
+<link rel="stylesheet" type="text/css" href="./static/css/styles.css" />
+
+<!-- Various scripts for aesthetics -->
+
+<script language="javascript" type="text/javascript"> 
+	<!--
+	function showhide(id){ 
+		if (document.getElementById){ 
+			obj = document.getElementById(id); 
+			if (obj.style.display == "none"){ 
+				obj.style.display = ""; 
+			} else { 
+				obj.style.display = "none"; 
+			} 
+		} 
+	} 
+	
+	function filltext() {
+		var output = document.getElementById("t_commandline").value;
+		var split = output.split(' ');
+		document.getElementById("t_file_2").value=split[(split.length)-1];
+	}
+	
+//-->
+</script> 
+
 </head>
-<body>
-	<div id="wrapper">
-		<div id="header">
-			<div id="headerTitle">
-				<h1>BioCloud</h1>
-			</div>
-			<div id="loginForm" align="right">
-				<a href="#"> {% if user.is_authenticated %} 
-				({{ user.username }}) sign out {% else %} log in {% endif %} </a>
+<body>	
+	<div id="d_main">
+		<div id="d_header">
+			<h1 class="title">BioCloud</h1>
+			<div id="d_login">
+				User (super@user.eu)
 			</div>
 		</div>
-		<form action="#">
-			<div id="content">
-				<div id="leftcolumn">
-					<select id="projectId">
-						<option value="hiv_treatment">Hiv treatment</option>
+		<div id="d_content">
+			<div id="d_project">
+				<!-- Start the form here? -->
+				<form id="f_project">
+			
+				<!-- Project dropdown; needs to be populated -->
+				<select>
+					<option>Project 1</option>
+				</select>
+				
+				<!-- Button for adding new files as new project -->
+				<button type="button" class="b_view" onclick="showhide('d_view');">View files</button>
+				<button type="button" class="b_upload" onclick="showhide('d_upload');">Upload files</button> 
+				<a href="#" onclick="showhide('p_project_help');">Help</a>
+				
+				<br />
+				<p id="p_project_help" style="display: none">
+					<i>New project can be created by uploading files. <br />
+					Files can be add to existing project by choosing "view files".</i>
+				</p>
+				
+				<div id="d_activity_1">
+					<h3>Activity 1</h3>
+					<div>
+					Select software <br />
+					<!-- Software dropdown; needs to be populated -->
+					<select id="l_software_1">
+						<option>Software 1</option>
 					</select>
+					</div>
+					<div>
+					Select file(s) <br />
+					<i>For selecting multiple files, just hold on CTRL (Windows) or CMD (Mac)</i><br />
+					<select id="l_file_1" size=5 multiple="multiple">
+						<option>File 1</option>
+						<option>File 2</option>
+					</select>
+					</div>
+					<div>
+						Resulting file and command line arguments <br />
+						<textarea rows="1" cols="50" id="t_commandline">-parameter -commands -out SRRR.fast</textarea>
+					</div>
 				</div>
-
-				<div id="rightcolumn">
-					<a href="#" onclick="window.open('upload', 'windowname1', 'width=300, height=400'); return false;">
-					View / Upload files</a>
+				<button type="button" onclick="showhide('d_activity_2'); filltext();" class="b_add_activity">Add activity</button>
+				<a href="#" onclick="showhide('p_activity_2_help');">What is this?</a>
+				<br />
+				<p id="p_activity_2_help" style="display: none">
+					<i>This feature allows chaining output of activity 1 to as an input of additional activity.<br /></i>
+				</p>
+				<div id="d_activity_2" style="display: none">
+					<h3>Activity 2</h3>
+					<div>
+					Select software <br />
+					<!-- Software dropdown; needs to be populated -->
+					<select id="l_software_2">
+						<option>Software 1</option>
+					</select>
+					</div>
+					<div>
+					Output file from Activity 1 <br />
+					<textarea rows="1" cols="20" id="t_file_2"></textarea>
+					</div>
 				</div>
-				<br /> <br /> <br />
-
-				<table>
-					<tr>
-						<td>Select program</td>
-						<td>Bowtie</td>
-					</tr>
-
-					<tr>
-						<td>Select file(s)</td>
-						<td>fil1.fastq</td>
-					</tr>
-
-					<tr>
-						<td colspan="2"><textarea rows="1" cols="50" id="commandId">-parameter -commands -out SRRR.fast
-						</textarea></td>
-					</tr>
-				</table>
+				</form>
+				<div id="d_submit">
+					<button type="button" onclick="" class="b_submit">Submit</button>
+					<button type="button" onclick="" class="b_cancel">Cancel</button>
+				</div>
 			</div>
-			<div id="rightalign">
-				<input type="submit" title="Submit" />
-			</div>
-		</form>
-		<div id="footer">Footer</div>
+		</div>
 	</div>
 </body>
 </html>

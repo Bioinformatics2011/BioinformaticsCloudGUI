@@ -1,196 +1,85 @@
 * {
 	padding: 0;
-	margin: 0;
+	margin: 10;
 }
 
 body {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 13px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	color: rgb(10%,10%,10%);
+	margin: 30px;
 }
 
-#wrapper {
-	margin: 0 auto;
-	width: 922px;
-}
-
-#faux {
-	background: url(faux-2-3-col.gif);
-	margin-bottom: 0px;
-	width: 902px;
-}
-
-#header {
-	color: #333;
-	width: 902px;
-	padding: 10px;
-	height: 100px;
-	margin: 10px 0px 0px 0px;
-	background: #D1DBDB;
-}
-
-#loginForm {
-	float: right;
-}
-
-#headerTitle {
-	float: left;
-}
-
-#navigation {
-	color: #333;
-	padding: 10px;
-	margin: 0px 0px 0px 0px;
-	background: #ABBEBE;
-}
-
-#leftcolumn {
-	display: inline;
-	color: #333;
-	margin: 10px;
-	padding: 0;
-	float: left;
-}
-
-#content {
-	width: 902px;
-	float: left;
-	color: #333;
-	margin: 10px 10px 10px 10px;
-	padding: 10;
-	display: inline;
-	position: relative;
-}
-
-#rightalign {
-	float : right;
-}
-
-#leftalign {
-	float : left;
-}
-
-#rightcolumn {
-	display: inline;
-	position: relative;
-	color: #333;
-	margin: 10px 10px 10px 0px;
-	padding: 0;
-	float: right;
-}
-
-#footer {
-	width: 902px;
-	clear: both;
-	color: #333;
-	background: #ABBEBE;
-	margin: 0px 0px 10px 0px;
-	padding: 10px;
-}
-
-.clear {
-	clear: both;
-	background: none;
-}
-
-/*LISTS*/
-ul.tree,ul.tree ul {
-	list-style-type: none;
-	background: url(gfx/vline.png) repeat-y;
-	margin: 0;
-	padding: 0;
-}
-
-ul.tree ul {
-	margin-left: 10px;
-}
-
-a:link,a:visited {
-	-moz-text-blink: none;
-	-moz-text-decoration-color: -moz-use-text-color;
-	-moz-text-decoration-line: none;
-	-moz-text-decoration-style: solid;
-	color: #254A86;
-}
-
-a:hover,a:focus {
-	-moz-text-blink: none;
-	-moz-text-decoration-color: -moz-use-text-color;
-	-moz-text-decoration-line: underline;
-	-moz-text-decoration-style: solid;
-}
-
-a img {
-	-moz-border-bottom-colors: none;
-	-moz-border-image: none;
-	-moz-border-left-colors: none;
-	-moz-border-right-colors: none;
-	-moz-border-top-colors: none;
-	border-bottom-color: -moz-use-text-color;
-	border-bottom-style: none;
-	border-bottom-width: medium;
-	border-left-color-ltr-source: physical;
-	border-left-color-rtl-source: physical;
-	border-left-color-value: -moz-use-text-color;
-	border-left-style-ltr-source: physical;
-	border-left-style-rtl-source: physical;
-	border-left-style-value: none;
-	border-left-width-ltr-source: physical;
-	border-left-width-rtl-source: physical;
-	border-left-width-value: medium;
-	border-right-color-ltr-source: physical;
-	border-right-color-rtl-source: physical;
-	border-right-color-value: -moz-use-text-color;
-	border-right-style-ltr-source: physical;
-	border-right-style-rtl-source: physical;
-	border-right-style-value: none;
-	border-right-width-ltr-source: physical;
-	border-right-width-rtl-source: physical;
-	border-right-width-value: medium;
-	border-top-color: -moz-use-text-color;
-	border-top-style: none;
-	border-top-width: medium;
-}
-
-h1,h2,h3,ol,p {
-	margin-bottom: 1.5em;
-	margin-left: 0;
-	margin-right: 0;
-	margin-top: 1.5em;
+div {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	margin: 15px;
 }
 
 h1 {
-	margin-bottom: 28px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 42px;
-	width: 284px;
+	font-size: 20px;
 }
-
 h2 {
-	font-size: 1.25em;
+	font size: 18px;
 }
 
-.uniForm h2 {
-	margin-bottom: 1em;
-	margin-left: 1.15em;
-	margin-right: 0;
-	margin-top: 1em;
+button {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	height: 20px;
+	width: 80px;
 }
 
-fieldset h3 {
-	background-attachment: scroll;
-	background-clip: border-box;
-	background-color: #EFEFEF;
-	background-image: none;
-	background-origin: padding-box;
-	background-position: 0 0;
-	background-repeat: repeat;
-	background-size: auto auto;
-	color: #343434;
-	line-height: 1;
-	margin-top: 1.5em;
-	padding-bottom: 14px;
-	padding-left: 28px;
-	padding-right: 28px;
-	padding-top: 14px;
+h1.title {
+	float:left;
+}
+
+i {
+	color: rgb(60%,60%,60%);
+}
+
+#d_main {
+	position: relative;
+	min-width: 700px;
+}
+
+#d_header {
+	/*display: inline;*/
+	vertical-align: center;
+	position: relative;
+}
+
+#d_content {
+	/* clear out floating set in header */
+	clear: both;
+	/* continue normally */
+	position: relative;
+	margin: 50px;
+	width: 500px;
+}
+
+#d_login {
+	float: left;
+	position: absolute;
+	top: 50%;
+	right: 0;
+}
+
+#d_activity_1 {
+	
+}
+
+#d_activity_2 {
+	color:red;
+}
+
+#d_submit {
+	float: left;
+	position: absolute;
+	right: 0;
+}
+
+#l_file_1 {
+	float: inherit;
+	width: 300px;
 }

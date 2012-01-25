@@ -32,6 +32,10 @@ def upload_popup(request):
     )
 
 def workflow(request):
+    if request.method == 'POST': # If the form has been submitted...
+        print(request.POST.getlist('program'))
+        
+        return HttpResponse(request)
     return render_to_response('biocloud/workflow.html',
         {'programs': [__importClass__(program).asJson() for program in settings.APPLICATIONS]},
         context_instance=RequestContext(request))

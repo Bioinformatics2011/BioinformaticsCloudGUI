@@ -91,11 +91,16 @@ class Program():
         return 'Abritrary Program'
     
     @classmethod
+    def parameters(cls):
+        return {}
+        
+    @classmethod
     def asJson(self):
         from django.utils import simplejson as jsonSerializer
         info = {'inputs': self.numberOfInputFiles(),
         'outputs': self.numberOfOutputFiles(),
         'fileNames': self.fileSemantics(),
-        'name': self.name()}
+        'name': self.name(),
+        'parameters': self.parameters()}
         return jsonSerializer.dumps(info)
             

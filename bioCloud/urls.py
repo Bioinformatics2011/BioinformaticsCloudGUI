@@ -16,7 +16,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^biocloud/$', 'biocloud.views.index'),
     url(r'^biocloud/upload/$', 'biocloud.views.upload_popup'),
-    url(r'^$', 'biocloud.views.workflow'),
-    url(r'^xhr$', 'biocloud.views.xhr_test')
-
+    url(r'^workflow/$', 'biocloud.views.workflow'),
 )

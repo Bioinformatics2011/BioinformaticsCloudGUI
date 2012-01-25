@@ -45,7 +45,7 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = '/home/m1/programming/python/BioinformaticsCloudGUI/bioCloud/files'
+MEDIA_ROOT = '/home/swt2stud/Documents/bioinfo/bioCloud/files'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -72,7 +72,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/m1/programming/python/BioinformaticsCloudGUI/bioCloud/biocloud/static',
+    '/home/swt2stud/Documents/bioinfo/bioCloud/biocloud/static',
 )
 
 STATICFILES_FINDERS = (
@@ -114,7 +114,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/m1/programming/python/BioinformaticsCloudGUI/bioCloud'
+    '/home/swt2stud/Documents/bioinfo/bioCloud'
 )
 
 INSTALLED_APPS = (
@@ -152,3 +152,5 @@ LOGGING = {
         },
     }
 }
+
+APPLICATIONS = ['biocloud.models.Program']

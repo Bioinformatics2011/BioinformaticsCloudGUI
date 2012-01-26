@@ -49,7 +49,8 @@ class Program():
     # an object of this class represents the recipe to be executed in the cluster
     # this is merely the interface to be implemented by every concrete program.
     
-    def __init__(self, inputs, output):
+    def __init__(self, formContent, workflow, stepNumber):
+        #filter out the files
         pass
     
     def set_inputs(self, inputs):
@@ -60,6 +61,8 @@ class Program():
         # TODO validate?
         self.output = outputs
         
+    def commandLineScript(self):
+        return ''
     def prepare(self):
         pass
     def run(self):

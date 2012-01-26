@@ -10,13 +10,9 @@
     <script type="text/javascript" src="/static/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="/static/bioCloud.js"></script>
     <script type="text/javascript">
-        biocloud.setPrograms([{% for program in programs %}
-            {{program|safe}},
-        {% endfor %}]);
+        biocloud.setPrograms([{% for program in programs %}{{program|safe}},{% endfor %}]);
 
-        biocloud.setFiles([{% for file in files %}
-            {{file|safe}},
-        {% endfor %}])
+        biocloud.setFiles([{% for file in files %}"{{file|safe}}",{% endfor %}])
     </script>
 </head>
 <body>

@@ -40,9 +40,9 @@ biocloud = {
         this.createProgramSelectorFor(this.programs)
     },
     setFiles: function(anArrayOfFileNames){
-        this.fileNames = anArrayOfFileNames
+        this.fileNames = anArrayOfFileNames.sort()
 
-        
+        //TODO change all select boxes
     },
     updateProgramBoxFor: function(aProgramBox, aProgramName, sequenceNumber){
         var program = undefined;
@@ -103,12 +103,22 @@ biocloud.Program.prototype = {
 (function (){
     var fileprototype = {
         renderTo: function(aBox, id){
-            name = 'program.'+id+'.file.'+this.fieldIndex;
+            var name = 'program.'+id+'.file.'+this.fieldIndex;
             aBox.append(this.index + ". " + this.name + '<br />'+
-                '<select name="'+name+'" class="file"></select>'+
-                '<input type="text" name="'+name+'"/>');
-            select = aBox.filter('select[name='+name+']').first();
-            biocloud.fileNames
+                '<select name="'+name+'" class="file">'+
+                    '<option value="">----------&gt;</option></select>'+
+                '<input type="text" class="file" name="'+name+'"/>');
+            var select = $('select.file', aBox),
+                input = $('input.file', aBox);
+            jQuery.each(biocloud.fileNames, function(i, each){
+                select.append("<option>"+each+"</option>")
+            });
+            input.change(function(event){
+                select.attr('value', "");
+            });
+            select.change(function(event){
+                input.attr('value', '');
+            });
         }
     };
     biocloud.InputFile.prototype = fileprototype;
@@ -143,7 +153,7 @@ $(document).ready(function(event){
     $('select.project').first().change(function(event){
         event.preventDefault();
         $.getJSON('/xhr/'+this.value+'/content', function(data){
-            bicloud.setFiles(data)
+            biocloud.setFiles(data)
         });
     });
 });

@@ -41,8 +41,8 @@ class File(Subject):
         
 class Program():
     # some explicit files, according to
-    input = []
-    output = []
+    input = [""]
+    output = [""]
     
     # Program class is the object representing the information about a program
     # to be executed via command line
@@ -51,24 +51,42 @@ class Program():
     
     def __init__(self, formContent, workflow, stepNumber):
         #filter out the files
-        pass
+        import pprint
+        pprint.pprint(formContent)
+        for i, aFile in formContent['file'].iteritems():
+            fileIndex = int(i)
+            if fileIndex < self.__class__.numberOfInputFiles():
+                self.set_input(fileIndex, aFile)
+            else:
+                self.set_output(fileIndex-self.__class__.numberOfInputFiles(), aFile)
     
     def set_inputs(self, inputs):
         # TODO validate?
         self.input = inputs
+
+    def set_input(self, i, fileName):
+        # TODO validate?
+        self.input[i] = fileName
         
     def set_output(self, outputs):
         # TODO validate?
         self.output = outputs
         
+    def set_output(self, i, fileName):
+        # TODO validate?
+        self.output[i] = fileName
+
     def commandLineScript(self):
-        return ''
+        return "\n".join([self.prepare(), self.run(), self.clear()])
     def prepare(self):
-        pass
+        return ""
     def run(self):
-        pass
+        return ("%(bin)s -i %(inputs)s -o %(outputs)s"
+            % { 'bin': self.__class__.binaryPath(),
+                'inputs': " ".join(self.input),
+                'outputs': " ".join(self.output)})
     def clear(self):
-        pass
+        return ""
 
     @classmethod
     def numberOfInputFiles(cls):
@@ -86,8 +104,8 @@ class Program():
     
     @classmethod
     def binaryPath(cls):
-        # absolute
-        return "/"
+        # absolute, if not in /usr/bin
+        return "/someProgram"
     
     @classmethod
     def name(cls):

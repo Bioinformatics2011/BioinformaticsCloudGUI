@@ -44,11 +44,11 @@ def workflow(request):
         for i, program in data['program'].iteritems():
             stepNumber = int(i)
             for candidate in candidates:
-                if program['programName'] is candidate.name():
-                    workflow.insert(stepNumber, new candidate(program, workflow, stepNumber))
+                if program['programName'] == candidate.name():
+                    workflow.insert(stepNumber, candidate(program, workflow, stepNumber))
                     break
         # now we have a list of Program instances ready to run
-        return HttpResponse([program.commandLineScript() for program in workflow])
+        return HttpResponse("<br />".join([program.commandLineScript() for program in workflow]))
     return render_to_response('biocloud/workflow.html',
         {'programs': [__importClass__(program).asJson() for program in settings.APPLICATIONS]},
         context_instance=RequestContext(request))

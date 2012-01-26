@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response
 from biocloud.forms import UploadForm
-from biocloud.models import UserFile, Program
+from biocloud.models import *
 from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse

@@ -1,7 +1,7 @@
 biocloud = {
     addDefaultProgramTo: function(container){
         
-        var number = container.find("div.program").size();
+        var number = container.filter("div.program").size();
         var thisProgram = $('<div class="program" id="program'+number+'"></div>')
             .insertBefore($('div.submitButtons', container));
         var programParameters = document.createElement("ul");
@@ -23,6 +23,13 @@ biocloud = {
         });
         this.programSelector = programSelector;
     },
+    fillWithFileNames: function(aSelectNode){
+        aSelectNode.empty();
+        aSelectNode.append('<option value="">----------&gt;</option>');
+        jQuery.each(this.fileNames, function(i, each){
+            aSelectNode.append("<option>"+each+"</option>")
+        });
+    },
     programSelectorFor: function(aProgramParameterBox, sequenceNumber){
         var programSelector = $(this.programSelector).clone();
         programSelector.attr("name", "program."+sequenceNumber+".programName");
@@ -41,8 +48,15 @@ biocloud = {
     },
     setFiles: function(anArrayOfFileNames){
         this.fileNames = anArrayOfFileNames.sort()
-
-        //TODO change all select boxes
+        $('select.file').each(function(i, each){
+            var select = $(each);
+            var input = select.next("input[type=text]");
+            if(select.val() != "" && input.val() == ""){
+                input.val(select.val());
+            }
+            biocloud.fillWithFileNames(select);
+        });
+        
     },
     updateProgramBoxFor: function(aProgramBox, aProgramName, sequenceNumber){
         var program = undefined;
@@ -105,14 +119,11 @@ biocloud.Program.prototype = {
         renderTo: function(aBox, id){
             var name = 'program.'+id+'.file.'+this.fieldIndex;
             aBox.append(this.index + ". " + this.name + '<br />'+
-                '<select name="'+name+'" class="file">'+
-                    '<option value="">----------&gt;</option></select>'+
-                '<input type="text" class="file" name="'+name+'"/>');
+                '<select name="'+name+'.select" class="file"></select>'+
+                '<input type="text" class="file" name="'+name+'.input"/>');
             var select = $('select.file', aBox),
                 input = $('input.file', aBox);
-            jQuery.each(biocloud.fileNames, function(i, each){
-                select.append("<option>"+each+"</option>")
-            });
+            biocloud.fillWithFileNames(select);
             input.change(function(event){
                 select.attr('value', "");
             });
@@ -126,7 +137,8 @@ biocloud.Program.prototype = {
 })();
 
 $(document).ready(function(event){
-    biocloud.workflow = $("form#workflow1");
+    // basic setting of biocloud variables
+    biocloud.workflow = $("form#workflow");
     biocloud.addDefaultProgramTo(biocloud.workflow);
     
     $("a#addProgram").click(function(event){
@@ -134,6 +146,7 @@ $(document).ready(function(event){
         event.preventDefault();
     });
 
+    // add XHR requesting to avoid losing the other form/inputs
     $('form#newProject').submit(function(event){
         event.preventDefault();
         var form = $(this),
@@ -150,6 +163,8 @@ $(document).ready(function(event){
             }
         })
     });
+    
+    // update of available files
     $('select.project').first().change(function(event){
         event.preventDefault();
         $.getJSON('/xhr/'+this.value+'/content', function(data){

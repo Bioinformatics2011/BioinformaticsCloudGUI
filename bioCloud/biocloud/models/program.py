@@ -1,44 +1,4 @@
-from django.db import models
-from observer import Subject
-import os.path
 
-def content_file_name(instance, filename):
-    return '/'.join([instance.userName, filename])
-
-
-class UserFile(models.Model):
-    userFile = models.FileField(upload_to=content_file_name)
-    userName = models.CharField(max_length=30)
-    
-    def filename(self):
-        return os.path.basename(self.userFile.name)
-
-
-class Project():
-    name = ""
-    path = ""
-    
-    def getFile(self, fileName):
-        if os.path.exists(self.path + fileName):
-            return File(self.path + fileName, self)
-            
-    def path(self):
-        return self.path
-
-class File(Subject):
-    path = ""
-    project = ""
-    
-    def __init__(self, path, project):
-        self.path = path
-        self.project = project
-    
-    def path(self):
-        return self.path
-    
-    def name(self):
-        return os.path.basename(self.path())
-        
 class Program():
     # some explicit files, according to
     input = [""]
@@ -51,10 +11,9 @@ class Program():
     
     def __init__(self, formContent, workflow, stepNumber):
         #filter out the files
-        import pprint
-        pprint.pprint(formContent)
-        for i, aFile in formContent['file'].iteritems():
+        for i, twoFiles in formContent['file'].iteritems():
             fileIndex = int(i)
+            aFile = twoFiles["select"] if twoFiles["input"] == "" else twoFiles["input"]
             if fileIndex < self.__class__.numberOfInputFiles():
                 self.set_input(fileIndex, aFile)
             else:

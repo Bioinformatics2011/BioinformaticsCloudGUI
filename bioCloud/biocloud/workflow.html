@@ -26,7 +26,7 @@
             {% csrf_token %}
             Create new Project(Folder): <input type="text" name="projectName" />
         </form>
-        <form id="workflow1" action="/workflow/" method="POST">
+        <form id="workflow" action="/workflow/" method="POST">
             Choose Project(Folder):
             <select name="projectName" class="project" size=1>
             {% if '' == selectedProject %}

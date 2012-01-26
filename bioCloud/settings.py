@@ -156,4 +156,4 @@ LOGGING = {
 SESSION_ENGINE = "django.contrib.sessions.backends.file"
 
 PROJECT_FOLDER = "/home/biocloud/projects/"
-APPLICATIONS = ['biocloud.models.Program']
+APPLICATIONS = ['biocloud.models.Program.Program']

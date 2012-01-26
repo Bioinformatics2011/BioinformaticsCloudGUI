@@ -1,7 +1,7 @@
 biocloud = {
     addDefaultProgramTo: function(container){
         
-        var number = container.filter("div.program").size();
+        var number = $("div.program", container).size();
         var thisProgram = $('<div class="program" id="program'+number+'"></div>')
             .insertBefore($('div.submitButtons', container));
         var programParameters = document.createElement("ul");

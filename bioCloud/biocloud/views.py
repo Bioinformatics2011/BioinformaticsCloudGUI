@@ -43,6 +43,7 @@ def workflow(request):
         data = DotExpandedDict(request.POST)
         
         request.session['projectName'] = request.POST['projectName']
+        aProject = project.Project(request.session['projectName'], settings.PROJECT_FOLDER + request.session['projectName'])
         
         candidates = [__importClass__(program) for program in settings.APPLICATIONS]
         workflow = []
@@ -55,7 +56,7 @@ def workflow(request):
         
         # now we have a list of Program instances ready to run
         return HttpResponse("<br />"
-            .join([program.commandLineScript()
+            .join([program.commandLineScript(aProject)
                         for program in workflow]))
     else:
         projectName = request.session.get('projectName', '')

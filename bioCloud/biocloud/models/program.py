@@ -1,15 +1,14 @@
 
 class Program():
-    # some explicit files, according to
-    input = [""]
-    output = [""]
-    
     # Program class is the object representing the information about a program
     # to be executed via command line
     # an object of this class represents the recipe to be executed in the cluster
     # this is merely the interface to be implemented by every concrete program.
     
     def __init__(self, formContent, workflow, stepNumber):
+        self.input = [i for i in range(self.__class__.numberOfInputFiles())]
+        self.output = [i for i in range(self.__class__.numberOfOutputFiles())]
+        
         #filter out the files
         for i, twoFiles in formContent['file'].iteritems():
             fileIndex = int(i)
@@ -35,16 +34,16 @@ class Program():
         # TODO validate?
         self.output[i] = fileName
 
-    def commandLineScript(self):
-        return "\n".join([self.prepare(), self.run(), self.clear()])
-    def prepare(self):
+    def commandLineScript(self, project):
+        return "\n".join([self.prepare(project), self.run(project), self.clear(project)])
+    def prepare(self, project):
         return ""
-    def run(self):
+    def run(self, project):
         return ("%(bin)s -i %(inputs)s -o %(outputs)s"
             % { 'bin': self.__class__.binaryPath(),
                 'inputs': " ".join(self.input),
                 'outputs': " ".join(self.output)})
-    def clear(self):
+    def clear(self, project):
         return ""
 
     @classmethod

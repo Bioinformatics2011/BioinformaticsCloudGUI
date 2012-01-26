@@ -1,1 +1,1 @@
-__all__ = ["File", "Program", "Project", "UserFile"]
+__all__ = ["file", "program", "project", "userfile"]

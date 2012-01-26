@@ -23,3 +23,6 @@ div.program{
     margin: 0 auto;
     text-align: center;
 }
+li.homepage, form#newProject{
+    float: right;
+}

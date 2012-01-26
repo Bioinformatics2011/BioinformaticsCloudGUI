@@ -6,6 +6,8 @@ from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.conf import settings
+import os
+import re
 
 def index(request):
     return render_to_response('biocloud/index.html', context_instance=RequestContext(request))
@@ -39,6 +41,9 @@ def workflow(request):
         from django.utils.datastructures import DotExpandedDict
         # do some escaping at this point?
         data = DotExpandedDict(request.POST)
+        
+        request.session['projectName'] = request.POST['projectName']
+        
         candidates = [__importClass__(program) for program in settings.APPLICATIONS]
         workflow = []
         for i, program in data['program'].iteritems():
@@ -47,19 +52,44 @@ def workflow(request):
                 if program['programName'] == candidate.name():
                     workflow.insert(stepNumber, candidate(program, workflow, stepNumber))
                     break
+        
         # now we have a list of Program instances ready to run
-        return HttpResponse("<br />".join([program.commandLineScript() for program in workflow]))
-    return render_to_response('biocloud/workflow.html',
-        {'programs': [__importClass__(program).asJson() for program in settings.APPLICATIONS]},
-        context_instance=RequestContext(request))
-
-def xhr_test(request):
-    if request.is_ajax():
-        message = "some AJAX"
+        return HttpResponse("<br />"
+            .join([program.commandLineScript()
+                        for program in workflow]))
     else:
-        message = "some default message"
-    return HttpResponse(message)
+        projectName = request.session.get('projectName', '')
+        files = []
+        if not projectName == '':
+            files = os.listdir(settings.PROJECT_FOLDER + projectName)
+        return render_to_response('biocloud/workflow.html',
+            {'programs': [__importClass__(program).asJson() for program in settings.APPLICATIONS],
+             'projects': filter(lambda each: os.path.isdir(settings.PROJECT_FOLDER + each),
+                                os.listdir(settings.PROJECT_FOLDER)),
+             'selectedProject': projectName,
+             'files': files},
+            context_instance=RequestContext(request))
+        
+def xhr_createProjectFolder(request):
+    if request.is_ajax() and request.method == 'POST':
+        projectName = request.POST['projectName']
+        if (re.match("^[^/|\r\n]+$", projectName) and
+                not os.path.exists(settings.PROJECT_FOLDER + projectName)):
+            os.makedirs(settings.PROJECT_FOLDER + projectName)
+            return HttpResponse(projectName)
+        else:
+            return HttpResponse("Project name is not a valid folder name, or the project already exists.")
+    else:
+        HttpResponseRedirect(reverse('biocloud.views.workflow'))
 
+def xhr_folderContents(request, projectName):
+    path = settings.PROJECT_FOLDER + projectName
+    if os.path.exists(path) and os.path.isdir(path):
+        files = os.listdir(path)
+        return HttpResponse('["%s"]' % '", "'.join(files))
+    else:
+        return HttpResponse("Project does not exist.")
+        
 def __importClass__(someString):
     (module, className) = someString.rsplit('.', 1)
     Module = __import__(module, globals(), locals(), [className])

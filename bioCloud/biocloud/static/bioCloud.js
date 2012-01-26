@@ -15,13 +15,6 @@ biocloud = {
         thisProgram.append(this.programSelectorFor($(programParameters), number));
         thisProgram.append(programParameters);
     },
-    addPrograms: function(anArrayOfProgramSpecs){
-        this.programSpecs = anArrayOfProgramSpecs;
-        this.programs = jQuery.map(anArrayOfProgramSpecs, function(each){
-            return new biocloud.Program(each);
-        })
-        this.createProgramSelectorFor(this.programs)
-    },
     createProgramSelectorFor: function(somePrograms){
         var programSelector = $(document.createElement("select"));
         programSelector.append("<option>&lt;Select Program&gt;</option>")
@@ -38,6 +31,18 @@ biocloud = {
                 event.target.value, sequenceNumber)
         });
         return programSelector;
+    },
+    setPrograms: function(anArrayOfProgramSpecs){
+        this.programSpecs = anArrayOfProgramSpecs;
+        this.programs = jQuery.map(anArrayOfProgramSpecs, function(each){
+            return new biocloud.Program(each);
+        })
+        this.createProgramSelectorFor(this.programs)
+    },
+    setFiles: function(anArrayOfFileNames){
+        this.fileNames = anArrayOfFileNames
+
+        
     },
     updateProgramBoxFor: function(aProgramBox, aProgramName, sequenceNumber){
         var program = undefined;
@@ -56,6 +61,7 @@ biocloud = {
     // the biocloud object)
     Program: function(aProgramSpec){
         this.name = aProgramSpec.name;
+        this.homepage = aProgramSpec.homepage;
         this.files = [];
         for(i=0; i < aProgramSpec.inputs; i++){
             this.files
@@ -83,6 +89,7 @@ biocloud = {
 
 biocloud.Program.prototype = {
     renderTo: function(aBox, id){
+        aBox.append('<li class="homepage"><a href="'+this.homepage+'">Homepage</li>')
         aBox.append("Select file(s)")
         jQuery.each(this.files, function(i, each){
             each.renderTo($("<li></li>").appendTo(aBox), id)
@@ -96,8 +103,12 @@ biocloud.Program.prototype = {
 (function (){
     var fileprototype = {
         renderTo: function(aBox, id){
+            name = 'program.'+id+'.file.'+this.fieldIndex;
             aBox.append(this.index + ". " + this.name + '<br />'+
-                '<input type="text" name="program.'+id+'.file.'+this.fieldIndex+'"/>');
+                '<select name="'+name+'" class="file"></select>'+
+                '<input type="text" name="'+name+'"/>');
+            select = aBox.filter('select[name='+name+']').first();
+            biocloud.fileNames
         }
     };
     biocloud.InputFile.prototype = fileprototype;
@@ -111,5 +122,28 @@ $(document).ready(function(event){
     $("a#addProgram").click(function(event){
         biocloud.addDefaultProgramTo(biocloud.workflow)
         event.preventDefault();
+    });
+
+    $('form#newProject').submit(function(event){
+        event.preventDefault();
+        var form = $(this),
+            values = {};
+        form.find('input').each(function(i, each){
+                values[each.name] = each.value;
+            });
+        $.post(form.attr('action'), values, function(data){
+            if(data == values.projectName){
+                $("select.project").first().prepend(
+                    '<option selected="selected">'+values.projectName+'</option>')
+            } else {
+                alert(data);
+            }
+        })
+    });
+    $('select.project').first().change(function(event){
+        event.preventDefault();
+        $.getJSON('/xhr/'+this.value+'/content', function(data){
+            bicloud.setFiles(data)
+        });
     });
 });

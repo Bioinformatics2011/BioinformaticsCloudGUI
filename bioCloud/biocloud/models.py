@@ -110,6 +110,10 @@ class Program():
     @classmethod
     def name(cls):
         return 'Abritrary Program'
+
+    @classmethod
+    def homepage(cls):
+        return 'http://www.google.com'
     
     @classmethod
     def parameters(cls):
@@ -122,6 +126,7 @@ class Program():
         'outputs': self.numberOfOutputFiles(),
         'fileNames': self.fileSemantics(),
         'name': self.name(),
+        'homepage': self.homepage(),
         'parameters': self.parameters()}
         return jsonSerializer.dumps(info)
             

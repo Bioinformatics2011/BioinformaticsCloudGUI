@@ -10,9 +10,13 @@
     <script type="text/javascript" src="/static/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="/static/bioCloud.js"></script>
     <script type="text/javascript">
-        biocloud.addPrograms([{% for program in programs %}
+        biocloud.setPrograms([{% for program in programs %}
             {{program|safe}},
         {% endfor %}]);
+
+        biocloud.setFiles([{% for file in files %}
+            {{file|safe}},
+        {% endfor %}])
     </script>
 </head>
 <body>
@@ -21,12 +25,24 @@
 			<div id="headerTitle">
 				<h1>BioCloud</h1>
 			</div>
-			<div id="loginForm" align="right">
-				<a href="#"> {% if user.is_authenticated %}
-				({{ user.username }}) sign out {% else %} log in {% endif %} </a>
-			</div>
-		</div>
+        </div>
+        <form id="newProject" action="/xhr/createProjectFolder" method="POST">
+            {% csrf_token %}
+            Create new Project(Folder): <input type="text" name="projectName" />
+        </form>
         <form id="workflow1" action="/workflow/" method="POST">
+            Choose Project(Folder):
+            <select name="projectName" class="project" size=1>
+            {% if '' == selectedProject %}
+                <option value="" selected="selected">
+                    &lt;Please select or create a project&gt;
+                </option>
+            {% endif %}
+            {% for option in projects %}
+                <option{% if option == selectedProject %} selected="selected"{% endif %}>
+                    {{option}}</option>
+            {% endfor %}
+            </select>
             {% csrf_token %}
             <div class="submitButtons">
                 <a id="addProgram">+</a>

@@ -2,3 +2,4 @@ settings.py
 *~
 .redcar
 *.pyc
+.DS_Store

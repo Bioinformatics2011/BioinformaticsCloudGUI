@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response
 from biocloud.forms import UploadForm
-from biocloud.models import UserFile, Program
+from biocloud.models import *
 from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -43,6 +43,7 @@ def workflow(request):
         data = DotExpandedDict(request.POST)
         
         request.session['projectName'] = request.POST['projectName']
+        aProject = project.Project(request.session['projectName'], settings.PROJECT_FOLDER + request.session['projectName'])
         
         candidates = [__importClass__(program) for program in settings.APPLICATIONS]
         workflow = []
@@ -55,7 +56,7 @@ def workflow(request):
         
         # now we have a list of Program instances ready to run
         return HttpResponse("<br />"
-            .join([program.commandLineScript()
+            .join([program.commandLineScript(aProject)
                         for program in workflow]))
     else:
         projectName = request.session.get('projectName', '')

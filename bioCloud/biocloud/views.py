@@ -11,6 +11,7 @@ import os
 import re
 import json
 from django.views.decorators.csrf import csrf_exempt  
+from io import BufferedWriter, FileIO
 
 def index(request):
     return render_to_response('biocloud/index.html', context_instance=RequestContext(request))
@@ -69,7 +70,7 @@ def xhr_createProjectFolder(request):
     else:
         HttpResponseRedirect(reverse('biocloud.views.workflow'))
 
-@csrf_exempt # this is not good, but other way i get error 403, and i do not not why :(
+@csrf_exempt # this is not good, but without it i get error 403, even if i send csrf_token.. 
 def xhr_upload(request):
     if request.method == "POST":
         if request.is_ajax():
@@ -86,13 +87,32 @@ def xhr_upload(request):
             else:
                 raise Http404("Bad Upload")
             filename = upload.name
-        success = save_upload(upload, filename, is_raw)
+        success = save_upload(upload, filename, is_raw,request.GET['current_project'])
         ret_json = {'success':success,}
         return HttpResponse(json.dumps(ret_json))
 
-def save_upload( uploaded, filename, raw_data ):
-    print filename, ' Saved'
-    return True
+def save_upload( uploaded, filename, raw_data, directory ):
+    '''
+      raw_data: if True, uploaded is an HttpRequest object with the file being
+            the raw post data
+            if False, uploaded has been submitted via the basic form
+            submission and is a regular Django UploadedFile in request.FILES
+    '''
+    print filename
+    try:
+        with BufferedWriter( FileIO(settings.PROJECT_FOLDER+directory+"/"+filename, "wb")) as dest:
+            if raw_data:
+                foo = uploaded.read(1024)
+                while foo:
+                    dest.write(foo)
+                    foo = uploaded.read(1024)
+            else:
+                for c in uploaded.chunks():
+                    dest.write(c)
+            return True
+    except IOError:
+        pass
+    return False
 
 def xhr_folderContents(request, projectName):
     path = settings.PROJECT_FOLDER + projectName

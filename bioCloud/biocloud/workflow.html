@@ -5,14 +5,24 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>BioCloud</title>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery.ui.all.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/workflow.css" />
-    <script type="text/javascript" src="/static/jquery-1.7.1.min.js"></script>
+    
+    <script type="text/javascript" src="/static/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/static/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="/static/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="/static/jquery.ui.tabs.js"></script>
+
     <script type="text/javascript" src="/static/bioCloud.js"></script>
     <script type="text/javascript">
         biocloud.setPrograms([{% for program in programs %}{{program|safe}},{% endfor %}]);
-
         biocloud.setFiles([{% for file in files %}"{{file|safe}}",{% endfor %}])
+        $(function() {
+				$( "#tabs" ).tabs({
+					collapsible: true
+				});
+		});
     </script>
 </head>
 <body>
@@ -22,30 +32,50 @@
 				<h1>BioCloud</h1>
 			</div>
         </div>
-        <form id="newProject" action="/xhr/createProjectFolder" method="POST">
-            {% csrf_token %}
-            Create new Project(Folder): <input type="text" name="projectName" />
-        </form>
-        <form id="workflow" action="/workflow/" method="POST">
-            Choose Project(Folder):
-            <select name="projectName" class="project" size=1>
-            {% if '' == selectedProject %}
-                <option value="" selected="selected">
-                    &lt;Please select or create a project&gt;
-                </option>
-            {% endif %}
-            {% for option in projects %}
-                <option{% if option == selectedProject %} selected="selected"{% endif %}>
-                    {{option}}</option>
-            {% endfor %}
-            </select>
-            {% csrf_token %}
-            <div class="submitButtons">
-                <a id="addProgram">+</a>
-                <input type="submit">
-                <input type="reset">
-            </div>
-        </form>
+        <div id="tabs">
+        	<ul>
+				<li><a href="#tabs-1">Programs</a></li>
+				<li><a href="#tabs-2">Files</a></li>
+			</ul>
+			
+        	<div id="tabs-1">
+		        <form id="newProject" action="/xhr/createProjectFolder" method="POST">
+		            {% csrf_token %}
+		            Create new Project(Folder): <input type="text" name="projectName" />
+		        </form>
+		        <form id="workflow" action="/workflow/" method="POST">
+		            Choose Project(Folder):
+		            <select name="projectName" class="project" size=1>
+		            
+		            {% if '' == selectedProject %}
+		                <option value="" selected="selected">
+		                    &lt;Please select or create a project&gt;
+		                </option>
+		            {% endif %}
+		            {% for option in projects %}
+		                <option{% if option == selectedProject %} selected="selected"{% endif %}>
+		                    {{option}}</option>
+		            {% endfor %}
+		            
+		            </select>
+		            {% csrf_token %}
+		            <div class="submitButtons">
+		                <a id="addProgram">+</a>
+		                <input type="submit">
+		                <input type="reset">
+		            </div>
+		        </form>
+		    </div>
+	       	<div id="tabs-2">
+				
+				<form id="upload_form" action="/xhr/uploadFile" method="post" enctype="multipart/form-data">
+					
+					
+					
+				</form>
+				
+	    	</div>
+	    
 		<div id="footer">Footer</div>
 	</div>
 </body>

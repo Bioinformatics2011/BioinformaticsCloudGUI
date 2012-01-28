@@ -1,37 +1,19 @@
 # Create your views here.
 from django.shortcuts import render_to_response
-from biocloud.forms import UploadForm
 from biocloud.models import *
 from django.template.context import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,\
+    HttpResponseBadRequest, Http404
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.middleware.csrf import get_token
 import os
 import re
+import json
+from django.views.decorators.csrf import csrf_exempt  
 
 def index(request):
     return render_to_response('biocloud/index.html', context_instance=RequestContext(request))
-
-def upload_popup(request):
-    if request.method == 'POST':
-        form = UploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            newdoc = UserFile(userFile=request.FILES['userFile'])
-            newdoc.userName = request.user.username
-            newdoc.save()
-            # Redirect to the document list after POST
-            return HttpResponseRedirect(reverse('biocloud.views.upload_popup'))
-    else:
-        form = UploadForm()
-    # A empty, unbound form
-    # Load documents for the list page
-    files = UserFile.objects.filter(userName=request.user.username)
-    # Render list page with the documents and the form
-    return render_to_response(
-        'biocloud/upload_popup.html',
-        {'files': files, 'form': form},
-        context_instance=RequestContext(request)
-    )
 
 def workflow(request):
     if request.method == 'POST': # If the form has been submitted...
@@ -63,13 +45,17 @@ def workflow(request):
         files = []
         if not projectName == '':
             files = os.listdir(settings.PROJECT_FOLDER + projectName)
+        
+        ctx = RequestContext(request, {
+            'csrf_token': get_token(request),
+        })
         return render_to_response('biocloud/workflow.html',
             {'programs': [__importClass__(program).asJson() for program in settings.APPLICATIONS],
              'projects': filter(lambda each: os.path.isdir(settings.PROJECT_FOLDER + each),
                                 os.listdir(settings.PROJECT_FOLDER)),
              'selectedProject': projectName,
              'files': files},
-            context_instance=RequestContext(request))
+            context_instance=ctx)
         
 def xhr_createProjectFolder(request):
     if request.is_ajax() and request.method == 'POST':
@@ -82,6 +68,31 @@ def xhr_createProjectFolder(request):
             return HttpResponse("Project name is not a valid folder name, or the project already exists.")
     else:
         HttpResponseRedirect(reverse('biocloud.views.workflow'))
+
+@csrf_exempt # this is not good, but other way i get error 403, and i do not not why :(
+def xhr_upload(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            upload = request
+            is_raw = True
+            try:
+                filename = request.GET['qqfile']
+            except KeyError:
+                return HttpResponseBadRequest("Ajax request not valid")
+        else:
+            is_raw = False
+            if len(request.FILES) == 1:
+                upload = request.FILES.values()[0]
+            else:
+                raise Http404("Bad Upload")
+            filename = upload.name
+        success = save_upload(upload, filename, is_raw)
+        ret_json = {'success':success,}
+        return HttpResponse(json.dumps(ret_json))
+
+def save_upload( uploaded, filename, raw_data ):
+    print filename, ' Saved'
+    return True
 
 def xhr_folderContents(request, projectName):
     path = settings.PROJECT_FOLDER + projectName

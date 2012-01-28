@@ -155,5 +155,5 @@ LOGGING = {
 
 SESSION_ENGINE = "django.contrib.sessions.backends.file"
 
-PROJECT_FOLDER = "/tmp"
+PROJECT_FOLDER = "/home/m1/programming/python/BioinformaticsCloudGUI/bioCloud/"
 APPLICATIONS = ['biocloud.models.bamtobed.BamToBed']

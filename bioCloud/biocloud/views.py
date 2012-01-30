@@ -121,7 +121,7 @@ def xhr_folderContents(request, projectName):
         return HttpResponse('["%s"]' % '", "'.join(files))
     else:
         return HttpResponse("Project does not exist.")
-        
+       
 def __importClass__(someString):
     (module, className) = someString.rsplit('.', 1)
     Module = __import__(module, globals(), locals(), [className])

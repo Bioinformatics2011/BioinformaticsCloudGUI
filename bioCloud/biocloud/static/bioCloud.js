@@ -30,6 +30,14 @@ biocloud = {
             aSelectNode.append("<option>"+each+"</option>")
         });
     },
+    fillWithFiles: function(ulTag){
+    	if (ulTag != null){
+    		ulTag.innerHTML = "";
+    		jQuery.each(this.fileNames, function(i, each){
+    			ulTag.innerHTML += "<li>"+each+"</li>"
+            });
+    	}
+    },
     programSelectorFor: function(aProgramParameterBox, sequenceNumber){
         var programSelector = $(this.programSelector).clone();
         programSelector.attr("name", "program."+sequenceNumber+".programName");
@@ -47,7 +55,8 @@ biocloud = {
         this.createProgramSelectorFor(this.programs)
     },
     setFiles: function(anArrayOfFileNames){
-        this.fileNames = anArrayOfFileNames.sort()
+        this.fileNames = anArrayOfFileNames.sort();
+        biocloud.fillWithFiles($("#uploaded-files-id")[0])
         $('select.file').each(function(i, each){
             var select = $(each);
             var input = select.next("input[type=text]");
@@ -167,8 +176,12 @@ $(document).ready(function(event){
     // update of available files
     $('select.project').first().change(function(event){
         event.preventDefault();
-        $.getJSON('/xhr/'+this.value+'/content', function(data){
-            biocloud.setFiles(data)
-        });
+        if (this.value == '') {// no selected project
+        	 biocloud.setFiles([]);
+        } else {
+	        $.getJSON('/xhr/'+this.value+'/content', function(data){
+	            biocloud.setFiles(data);
+	        });
+        }
     });
 });

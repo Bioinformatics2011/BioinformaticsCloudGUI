@@ -71,21 +71,16 @@
 				<div id="file-uploader"></div>
 				
 				<div id="uploaded-files">
-				File list:
-				{% if files %}
-				<ul>
-					{% for file in files %}
-					<li><a href="{{ file.userFile.url }}">
-					{{file.filename }} ({{file.userFile.size|filesizeformat}})</a></li> 
-					{% endfor %}
-				</ul>
-				{% endif %}
+				File list:<br/>
+					<ul id ="uploaded-files-id">
+					
+					</ul>
 				</div>
 			</div>
 			</form>
 			<div id="footer">Footer</div>
 		</div>
-
+	</div>
 		<script type="text/javascript">
 	    	var uploader = new qq.FileUploader( {
 	    	action: "{% url xhr_upload %}",

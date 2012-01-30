@@ -1,13 +1,15 @@
+from subprocess import call
 from biocloud.models.program import Program
 # bamToBed -i /home/bioinfo/bioinfo_2011/NGS/testt.bam > outfile.bed
 class BamToBed(Program):
 
     def run(self, project):
-        return ("%(bin)s %(parameters)s -i %(inputs)s > %(outputs)s"
-            % { 'bin': self.binaryPath(),
-                'parameters': self.getSubmittedParams(),
-                'inputs': project.file(self.input[0]),
-                'outputs': project.file(self.output[0])})
+        command = "%(bin)s %(parameters)s -i %(inputs)s > %(outputs)s" % {'bin':self.binaryPath(), 
+            'parameters':self.getSubmittedParams(), 
+            'inputs':project.file(self.input[0]), 
+            'outputs':project.file(self.output[0])}
+        #call(command, shell=True)
+        return command
 
     @classmethod
     def numberOfInputFiles(cls):

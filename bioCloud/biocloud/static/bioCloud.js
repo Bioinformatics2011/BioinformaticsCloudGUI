@@ -30,6 +30,15 @@ biocloud = {
             aSelectNode.append("<option>"+each+"</option>")
         });
     },
+    fillWithFiles: function(fileTable){
+    	if (fileTable != null){
+    		fileTable.innerHTML = "<tr> <th>File</th> <th>Size</th> <th>Action</th> </tr>";
+    		for (key in this.files) {
+    			fileTable.innerHTML += "<tr><td>"+key+"</td><td>"+this.files[key]['fsize']+" KB </td><td><a href=\"#\" onClick=\"alert('not implemented yet');\"> DELETE </a> </td></tr>"
+    		}
+    	}
+    },
+    
     programSelectorFor: function(aProgramParameterBox, sequenceNumber){
         var programSelector = $(this.programSelector).clone();
         programSelector.attr("name", "program."+sequenceNumber+".programName");
@@ -46,8 +55,14 @@ biocloud = {
         })
         this.createProgramSelectorFor(this.programs)
     },
-    setFiles: function(anArrayOfFileNames){
-        this.fileNames = anArrayOfFileNames.sort()
+    setFiles: function(data){
+    	fileNameArray = [];
+    	for (var key in data) {
+    		fileNameArray.push(key)
+		}
+        this.fileNames = fileNameArray;
+        this.files = data;
+        biocloud.fillWithFiles($("#uploaded-files-table")[0])
         $('select.file').each(function(i, each){
             var select = $(each);
             var input = select.next("input[type=text]");
@@ -57,6 +72,13 @@ biocloud = {
             biocloud.fillWithFileNames(select);
         });
         
+    },
+    
+    setParameters: function(anArrayOfParameterSpecs) {
+        this.parameterSpecs = anArrayOfParameterSpecs;
+        this.parameters = jQuery.map(anArrayOfParameterSpecs, function(each){
+            return new biocloud.Parameter(each);
+        })
     },
     updateProgramBoxFor: function(aProgramBox, aProgramName, sequenceNumber){
         var program = undefined;
@@ -77,6 +99,7 @@ biocloud = {
         this.name = aProgramSpec.name;
         this.homepage = aProgramSpec.homepage;
         this.files = [];
+        this.parameters = [];
         for(i=0; i < aProgramSpec.inputs; i++){
             this.files
                 .push(new biocloud.InputFile(i,
@@ -86,8 +109,14 @@ biocloud = {
             this.files
                 .push(new biocloud.OutputFile(i+1, aProgramSpec.inputs + i,
                         aProgramSpec.fileNames[aProgramSpec.inputs + i]));
+                        
         }
         /* What to do about parameters? */
+        for(i=0;i < aProgramSpec.parameters.length; i++){
+            this.parameters
+                .push(new biocloud.Parameter(i,aProgramSpec.parameters[i][0],
+                    aProgramSpec.parameters[i][1],aProgramSpec.parameters[i][2]));
+        }
     },
     InputFile: function(index, name){
         this.index = index+1;
@@ -98,6 +127,12 @@ biocloud = {
         this.index = index;
         this.name = name;
         this.fieldIndex = fieldIndex;
+    },
+    Parameter: function(index,name,flag,flagtype){
+        this.index = index;
+        this.name = name;
+        this.flag = flag;
+        this.flagtype = flagtype;
     }
 };
 
@@ -108,9 +143,19 @@ biocloud.Program.prototype = {
         jQuery.each(this.files, function(i, each){
             each.renderTo($("<li></li>").appendTo(aBox), id)
         })
+
         this.command = $('<input type="text" class="commandline" readonly="readonly" name="program.'+id+'.commandPreview" />')
             .appendTo($("<li></li>")
                 .appendTo(aBox));
+        /* Taavi testing parameters */
+        aBox.append("Choose parameters<br />")
+         jQuery.each(this.parameters, function(i, each){
+             aBox.append(each.name);
+             $('<input type="checkbox" name="program.'+id+'.parameter.'+each.index+'.flag" value="'+each.flag+'" checked>').appendTo($("<li></li>").appendTo(aBox));
+             if (each.flagtype=="var") {
+                 $('<input type="text" class="parameter" name="program.'+id+'.parameter.'+each.index+'.value" />').appendTo($("<li></li>").appendTo(aBox));
+             }
+        })
     }
 };
 // create a block context, to avoid cluttering the global namespace with the fileprototype
@@ -167,8 +212,17 @@ $(document).ready(function(event){
     // update of available files
     $('select.project').first().change(function(event){
         event.preventDefault();
-        $.getJSON('/xhr/'+this.value+'/content', function(data){
-            biocloud.setFiles(data)
-        });
+        if (this.value == '') {// no selected project
+        	 biocloud.setFiles([]);
+        } else {
+	        $.getJSON('/xhr/'+this.value+'/content', function(data){
+	        	fileNameArray = [];
+	        	for (var key in data) {
+	        		fileNameArray.push(key)
+        		}
+	            biocloud.setFiles(data);
+            	biocloud.setParameters(fileNameArray);
+	        });
+        }
     });
 });

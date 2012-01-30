@@ -3,16 +3,28 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>BioCloud</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
-    <link rel="stylesheet" type="text/css" href="/static/css/workflow.css" />
-    <script type="text/javascript" src="/static/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="/static/bioCloud.js"></script>
-    <script type="text/javascript">
-        biocloud.setPrograms([{% for program in programs %}{{program|safe}},{% endfor %}]);
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>BioCloud</title>
+<link rel="stylesheet"
+	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery.ui.all.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/workflow.css" />
+<link rel="stylesheet" type="text/css" href="/static/fileuploader.css"/>
 
-        biocloud.setFiles([{% for file in files %}"{{file|safe}}",{% endfor %}])
+<script type="text/javascript" src="/static/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="/static/jquery.ui.core.js"></script>
+<script type="text/javascript" src="/static/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="/static/jquery.ui.tabs.js"></script>
+<script type="text/javascript" src="/static/fileuploader.js"></script>
+<script type="text/javascript" src="/static/bioCloud.js"></script>
+<script type="text/javascript">
+        biocloud.setPrograms([{% for program in programs %}{{program|safe}},{% endfor %}]);
+        biocloud.setFiles([{% for file in files %}"{file.fname|safe}}",{% endfor %}])
+        $(function() {
+			$( "#tabs" ).tabs({
+				collapsible: true
+			});
+		});
     </script>
 </head>
 <body>
@@ -21,32 +33,80 @@
 			<div id="headerTitle">
 				<h1>BioCloud</h1>
 			</div>
-        </div>
-        <form id="newProject" action="/xhr/createProjectFolder" method="POST">
-            {% csrf_token %}
-            Create new Project(Folder): <input type="text" name="projectName" />
-        </form>
-        <form id="workflow" action="/workflow/" method="POST">
-            Choose Project(Folder):
-            <select name="projectName" class="project" size=1>
-            {% if '' == selectedProject %}
-                <option value="" selected="selected">
-                    &lt;Please select or create a project&gt;
-                </option>
-            {% endif %}
-            {% for option in projects %}
-                <option{% if option == selectedProject %} selected="selected"{% endif %}>
-                    {{option}}</option>
-            {% endfor %}
-            </select>
-            {% csrf_token %}
-            <div class="submitButtons">
-                <a id="addProgram">+</a>
-                <input type="submit">
-                <input type="reset">
-            </div>
-        </form>
-		<div id="footer">Footer</div>
+		</div>
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">BioCloud</a></li>
+				<li><a href="#tabs-2">Files</a></li>
+			</ul>
+			
+			<form id="newProject" action="/xhr/createProjectFolder"
+					method="POST">
+					{% csrf_token %} Create new Project(Folder): <input type="text"
+						name="projectName" />
+			</form>
+			<form id="workflow" action="/workflow/" method="POST">
+			
+			Choose Project(Folder): 
+			<select id="currentProject" name="projectName" class="project" size=1> {% if '' == selectedProject %}
+				<option value="" selected="selected">&lt;Please select or create a project&gt;</option> {% endif %} 
+					{% for option in projects %}
+						<option {% if option == selectedProject %} selected="selected"{% endif %}>
+							{{option}}
+						</option> 
+					{% endfor %}
+
+			</select> {% csrf_token %}
+			
+			<div id="tabs-1">
+					<div class="submitButtons">
+						<a id="addProgram">+</a> <input type="submit"> <input
+							type="reset">
+					</div>
+				
+			</div>
+
+			<div id="tabs-2">
+		
+				<div id="file-uploader"></div>
+				
+				<div id="uploaded-files">
+				File list:<br/>
+					<table id="uploaded-files-table">
+						
+					</table>
+				</div>
+			</div>
+			</form>
+			<div id="footer">Footer</div>
+		</div>
 	</div>
+		<script type="text/javascript">
+	    	var uploader = new qq.FileUploader( {
+	    	action: "{% url xhr_upload %}",
+	    	element: $('#file-uploader')[0],
+            multiple: true,
+            
+            onComplete: function( id, fileName, responseJSON ) {
+              if( responseJSON.success )
+                alert( "success!" ) ;
+              else
+                alert( "upload failed!" ) ;
+            },
+            onAllComplete: function( uploads ) {
+              alert( "All complete!" ) ;
+            },
+            onSubmit: function (id, fileName){
+          		uploader.setParams({
+          			'csrf_token': '{{ csrf_token }}',
+                    'csrf_name': 'csrfmiddlewaretoken',
+                    'csrf_xname': 'X-CSRFToken',
+            		current_project: $("#currentProject")[0].value
+          		});
+            }
+            
+          } ) ;
+	      $(".qq-upload-button").contents().first().replaceWith("Upload new file");
+    </script>
 </body>
 </html>

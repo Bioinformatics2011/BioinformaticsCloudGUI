@@ -6,33 +6,48 @@ class Program():
     # this is merely the interface to be implemented by every concrete program.
     
     def __init__(self, formContent, workflow, stepNumber):
-        self.input = [i for i in range(self.__class__.numberOfInputFiles())]
-        self.output = [i for i in range(self.__class__.numberOfOutputFiles())]
+        self.input = [i for i in range(self.numberOfInputFiles())]
+        self.output = [i for i in range(self.numberOfOutputFiles())]
+        self.submittedParams = [''] * self.numberOfParameters()
         
         #filter out the files
         for i, twoFiles in formContent['file'].iteritems():
             fileIndex = int(i)
             aFile = twoFiles["select"] if twoFiles["input"] == "" else twoFiles["input"]
-            if fileIndex < self.__class__.numberOfInputFiles():
-                self.set_input(fileIndex, aFile)
+            if fileIndex < self.numberOfInputFiles():
+                self.setInput(fileIndex, aFile)
             else:
-                self.set_output(fileIndex-self.__class__.numberOfInputFiles(), aFile)
+                self.setOutput(fileIndex-self.numberOfInputFiles(), aFile)
+        
+        #filter parameters
+        for i, param in formContent['parameter'].iteritems():
+            self.setParam(i, param)
+            
+            #sself.submittedParams[i] = "  ".join(param.itervalues())
     
-    def set_inputs(self, inputs):
+    def setInputs(self, inputs):
         # TODO validate?
         self.input = inputs
 
-    def set_input(self, i, fileName):
+    def setInput(self, i, fileName):
         # TODO validate?
         self.input[i] = fileName
         
-    def set_output(self, outputs):
+    def setOutput(self, outputs):
         # TODO validate?
         self.output = outputs
         
-    def set_output(self, i, fileName):
+    def setOutput(self, i, fileName):
         # TODO validate?
         self.output[i] = fileName
+        
+    def setParam(self, i, param):
+        # TODO validate?
+        for val in param.itervalues():
+            self.submittedParams[int(i)] += val.encode('ascii')
+            
+    def getSubmittedParams(self):
+        return " ".join(self.submittedParams)
 
     def commandLineScript(self, project):
         return "\n".join([self.prepare(project), self.run(project), self.clear(project)])
@@ -40,7 +55,7 @@ class Program():
         return ""
     def run(self, project):
         return ("%(bin)s -i %(inputs)s -o %(outputs)s"
-            % { 'bin': self.__class__.binaryPath(),
+            % { 'bin': self.binaryPath(),
                 'inputs': " ".join(self.input),
                 'outputs': " ".join(self.output)})
     def clear(self, project):

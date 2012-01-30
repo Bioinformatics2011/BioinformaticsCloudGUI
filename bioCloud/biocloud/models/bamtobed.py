@@ -3,8 +3,9 @@ from biocloud.models.program import Program
 class BamToBed(Program):
 
     def run(self, project):
-        return ("%(bin)s -i %(inputs)s > %(outputs)s"
-            % { 'bin': self.__class__.binaryPath(),
+        return ("%(bin)s %(parameters)s -i %(inputs)s > %(outputs)s"
+            % { 'bin': self.binaryPath(),
+                'parameters': self.getSubmittedParams(),
                 'inputs': project.file(self.input[0]),
                 'outputs': project.file(self.output[0])})
 
@@ -30,6 +31,10 @@ class BamToBed(Program):
     @classmethod
     def name(cls):
         return 'bamToBed'
+        
+    @classmethod
+    def numberOfParameters(cls):
+        return 2
         
     @classmethod
     def parameters(cls):

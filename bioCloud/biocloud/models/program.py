@@ -1,3 +1,4 @@
+import re
 
 class Program():
     # Program class is the object representing the information about a program
@@ -41,10 +42,20 @@ class Program():
         # TODO validate?
         self.output[i] = fileName
         
-    def setParam(self, i, param):
+    def setParam(self, i, param, separator=" "):
         # TODO validate?
-        for val in param.itervalues():
-            self.submittedParams[int(i)] += val.encode('ascii')
+        for idx, val in param.iteritems():
+            val = val.encode('ascii')
+            if idx == 'flag':
+                self.submittedParams[int(i)] = val + separator
+            else:
+                self.submittedParams[int(i)] += self.parseArgument(val, separator)
+                
+    def parseArgument(self, arg, separator=" "):
+        if arg.isdigit():
+            return  arg + separator
+        else:
+            return '"%s"%s' % (re.escape(arg), separator) 
             
     def getSubmittedParams(self):
         return " ".join(self.submittedParams)

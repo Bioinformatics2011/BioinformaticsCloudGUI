@@ -19,7 +19,7 @@
 <script type="text/javascript" src="/static/bioCloud.js"></script>
 <script type="text/javascript">
         biocloud.setPrograms([{% for program in programs %}{{program|safe}},{% endfor %}]);
-        biocloud.setFiles([{% for file in files %}"{{file|safe}}",{% endfor %}])
+        biocloud.setFiles([{% for file in files %}"{file.fname|safe}}",{% endfor %}])
         $(function() {
 			$( "#tabs" ).tabs({
 				collapsible: true
@@ -72,9 +72,9 @@
 				
 				<div id="uploaded-files">
 				File list:<br/>
-					<ul id ="uploaded-files-id">
-					
-					</ul>
+					<table id="uploaded-files-table">
+						
+					</table>
 				</div>
 			</div>
 			</form>

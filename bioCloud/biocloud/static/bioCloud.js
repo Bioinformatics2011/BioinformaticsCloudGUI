@@ -30,14 +30,15 @@ biocloud = {
             aSelectNode.append("<option>"+each+"</option>")
         });
     },
-    fillWithFiles: function(ulTag){
-    	if (ulTag != null){
-    		ulTag.innerHTML = "";
-    		jQuery.each(this.fileNames, function(i, each){
-    			ulTag.innerHTML += "<li>"+each+"</li>"
-            });
+    fillWithFiles: function(fileTable){
+    	if (fileTable != null){
+    		fileTable.innerHTML = "<tr> <th>File</th> <th>Size</th> <th>Action</th> </tr>";
+    		for (key in this.files) {
+    			fileTable.innerHTML += "<tr><td>"+key+"</td><td>"+this.files[key]['fsize']+" KB </td><td><a href=\"#\" onClick=\"alert('not implemented yet');\"> DELETE </a> </td></tr>"
+    		}
     	}
     },
+    
     programSelectorFor: function(aProgramParameterBox, sequenceNumber){
         var programSelector = $(this.programSelector).clone();
         programSelector.attr("name", "program."+sequenceNumber+".programName");
@@ -54,9 +55,14 @@ biocloud = {
         })
         this.createProgramSelectorFor(this.programs)
     },
-    setFiles: function(anArrayOfFileNames){
-        this.fileNames = anArrayOfFileNames.sort();
-        biocloud.fillWithFiles($("#uploaded-files-id")[0])
+    setFiles: function(data){
+    	fileNameArray = [];
+    	for (var key in data) {
+    		fileNameArray.push(key)
+		}
+        this.fileNames = fileNameArray;
+        this.files = data;
+        biocloud.fillWithFiles($("#uploaded-files-table")[0])
         $('select.file').each(function(i, each){
             var select = $(each);
             var input = select.next("input[type=text]");
@@ -210,8 +216,12 @@ $(document).ready(function(event){
         	 biocloud.setFiles([]);
         } else {
 	        $.getJSON('/xhr/'+this.value+'/content', function(data){
+	        	fileNameArray = [];
+	        	for (var key in data) {
+	        		fileNameArray.push(key)
+        		}
 	            biocloud.setFiles(data);
-            	    biocloud.setParameters(data)
+            	biocloud.setParameters(fileNameArray);
 	        });
         }
     });

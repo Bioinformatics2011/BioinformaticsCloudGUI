@@ -68,14 +68,13 @@
 
 			<div id="tabs-2">
 		
-				<div id="file-uploader"></div>
-				
 				<div id="uploaded-files">
 				File list:<br/>
 					<table id="uploaded-files-table">
 						
 					</table>
 				</div>
+					<div id="file-uploader"></div>
 			</div>
 			</form>
 			<div id="footer">Footer</div>
@@ -88,8 +87,10 @@
             multiple: true,
             
             onComplete: function( id, fileName, responseJSON ) {
-              if( responseJSON.success )
+              if( responseJSON.success ) {
                 alert( "success!" ) ;
+              	biocloud.refreshData();
+              }
               else
                 alert( "upload failed!" ) ;
             },

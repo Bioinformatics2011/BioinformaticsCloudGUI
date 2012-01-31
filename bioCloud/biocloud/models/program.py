@@ -61,10 +61,6 @@ class Program():
         return 1
     
     @classmethod
-    def numberOfParameters(cls):
-        return 1
-    
-    @classmethod
     def binaryPath(cls):
         # absolute, if not in /usr/bin
         return "/someProgram"

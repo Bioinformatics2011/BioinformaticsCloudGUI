@@ -7,9 +7,11 @@ from django.http import HttpResponse, HttpResponseRedirect,\
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.middleware.csrf import get_token
+from django.utils import simplejson
 import os
 import re
 import json
+import stat 
 from django.views.decorators.csrf import csrf_exempt  
 from io import BufferedWriter, FileIO
 
@@ -47,6 +49,15 @@ def workflow(request):
         if not projectName == '':
             files = os.listdir(settings.PROJECT_FOLDER + projectName)
         
+        file_info_list = []
+        for file_name in files:
+            file_info = {
+                'fname': file_name,
+                'fsize': os.stat(settings.PROJECT_FOLDER + projectName + "/" + file_name) [stat.ST_SIZE],
+            }
+            if not os.path.isdir(settings.PROJECT_FOLDER + projectName + "/" + file_name):
+                file_info_list.append(file_info)
+            
         ctx = RequestContext(request, {
             'csrf_token': get_token(request),
         })
@@ -55,7 +66,7 @@ def workflow(request):
              'projects': filter(lambda each: os.path.isdir(settings.PROJECT_FOLDER + each),
                                 os.listdir(settings.PROJECT_FOLDER)),
              'selectedProject': projectName,
-             'files': files},
+             'files': file_info_list},
             context_instance=ctx)
         
 def xhr_createProjectFolder(request):
@@ -98,7 +109,6 @@ def save_upload( uploaded, filename, raw_data, directory ):
             if False, uploaded has been submitted via the basic form
             submission and is a regular Django UploadedFile in request.FILES
     '''
-    print filename
     try:
         with BufferedWriter( FileIO(settings.PROJECT_FOLDER+directory+"/"+filename, "wb")) as dest:
             if raw_data:
@@ -118,10 +128,18 @@ def xhr_folderContents(request, projectName):
     path = settings.PROJECT_FOLDER + projectName
     if os.path.exists(path) and os.path.isdir(path):
         files = os.listdir(path)
-        return HttpResponse('["%s"]' % '", "'.join(files))
+        file_info_map = {}
+        for file_name in files:
+            file_info = {
+                'fname': file_name,
+                'fsize': os.stat(path +"/" + file_name) [stat.ST_SIZE],
+            }
+            if not os.path.isdir(path +"/" + file_name):
+                file_info_map[file_name] = file_info
+        return HttpResponse(simplejson.dumps(file_info_map))
     else:
         return HttpResponse("Project does not exist.")
-        
+       
 def __importClass__(someString):
     (module, className) = someString.rsplit('.', 1)
     Module = __import__(module, globals(), locals(), [className])

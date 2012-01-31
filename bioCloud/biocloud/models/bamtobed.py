@@ -1,12 +1,15 @@
+from subprocess import call
 from biocloud.models.program import Program
 # bamToBed -i /home/bioinfo/bioinfo_2011/NGS/testt.bam > outfile.bed
 class BamToBed(Program):
 
     def run(self, project):
-        return ("%(bin)s -i %(inputs)s > %(outputs)s"
-            % { 'bin': self.__class__.binaryPath(),
-                'inputs': project.file(self.input[0]),
-                'outputs': project.file(self.output[0])})
+        command = "%(bin)s %(parameters)s -i %(inputs)s > %(outputs)s" % {'bin':self.binaryPath(), 
+            'parameters':self.getSubmittedParams(), 
+            'inputs':project.file(self.input[0]), 
+            'outputs':project.file(self.output[0])}
+        #call(command, shell=True)
+        return command
 
     @classmethod
     def numberOfInputFiles(cls):
@@ -32,9 +35,13 @@ class BamToBed(Program):
         return 'bamToBed'
         
     @classmethod
+    def numberOfParameters(cls):
+        return 3
+        
+    @classmethod
     def parameters(cls):
         # currently just a simple list of lists [["name","flag","type"],...] where type can be either flag or variable
-        return [["edit distance","-ed","flag"],["to bedpe","-bedpe","var"]]
+        return [["edit distance","-ed","flag"],["to bedpe","-bedpe","flag"],["test variable submit","-testvar","var"]]
 
     @classmethod
     def homepage(cls):

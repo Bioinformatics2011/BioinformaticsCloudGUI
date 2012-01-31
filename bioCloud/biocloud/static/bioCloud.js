@@ -30,6 +30,16 @@ biocloud = {
             aSelectNode.append("<option>"+each+"</option>")
         });
     },
+    fillWithFiles: function(fileTable){
+    	if (fileTable != null){
+    		fileTable.innerHTML = "<tr> <th>File</th> <th>Size</th> <th>Action</th> </tr>";
+    		for (key in this.files) {
+    			fileTable.innerHTML += "<tr><td>"+key+"</td><td>"+this.files[key]['fsize']+" KB </td><td>" +
+    					"<a href=\"#\" onClick=\"alert('not implemented yet');\"> DELETE </a> | <a href=\"#\"> VIEW </a> | <a href=\"#\"> DOWNLOAD </a> </td></tr>"
+    		}
+    	}
+    },
+    
     programSelectorFor: function(aProgramParameterBox, sequenceNumber){
         var programSelector = $(this.programSelector).clone();
         programSelector.attr("name", "program."+sequenceNumber+".programName");
@@ -46,8 +56,14 @@ biocloud = {
         })
         this.createProgramSelectorFor(this.programs)
     },
-    setFiles: function(anArrayOfFileNames){
-        this.fileNames = anArrayOfFileNames.sort()
+    setFiles: function(data){
+    	fileNameArray = [];
+    	for (var key in data) {
+    		fileNameArray.push(key)
+		}
+        this.fileNames = fileNameArray;
+        this.files = data;
+        biocloud.fillWithFiles($("#uploaded-files-table")[0])
         $('select.file').each(function(i, each){
             var select = $(each);
             var input = select.next("input[type=text]");
@@ -65,6 +81,23 @@ biocloud = {
             return new biocloud.Parameter(each);
         })
     },
+    
+    refreshData: function(){
+    	
+    	if ($('#currentProject')[0].value == '') {// no selected project
+    		biocloud.setFiles([]);
+        } else {
+	        $.getJSON('/xhr/'+$('#currentProject')[0].value+'/content', function(data){
+	        	fileNameArray = [];
+	        	for (var key in data) {
+	        		fileNameArray.push(key)
+        		}
+	        	biocloud.setFiles(data);
+	        	biocloud.setParameters(fileNameArray);
+	        });
+        }
+    },
+    
     updateProgramBoxFor: function(aProgramBox, aProgramName, sequenceNumber){
         var program = undefined;
         jQuery.each(biocloud.programs, function(i, each){
@@ -170,7 +203,7 @@ $(document).ready(function(event){
     // basic setting of biocloud variables
     biocloud.workflow = $("form#workflow");
     biocloud.addDefaultProgramTo(biocloud.workflow);
-    
+    biocloud.refreshData();
     $("a#addProgram").click(function(event){
         biocloud.addDefaultProgramTo(biocloud.workflow)
         event.preventDefault();
@@ -187,7 +220,8 @@ $(document).ready(function(event){
         $.post(form.attr('action'), values, function(data){
             if(data == values.projectName){
                 $("select.project").first().prepend(
-                    '<option selected="selected">'+values.projectName+'</option>')
+                    '<option selected="selected">'+values.projectName+'</option>');
+                biocloud.refreshData();
             } else {
                 alert(data);
             }
@@ -197,9 +231,17 @@ $(document).ready(function(event){
     // update of available files
     $('select.project').first().change(function(event){
         event.preventDefault();
-        $.getJSON('/xhr/'+this.value+'/content', function(data){
-            biocloud.setFiles(data)
-            biocloud.setParameters(data)
-        });
+        if (this.value == '') {// no selected project
+        	 biocloud.setFiles([]);
+        } else {
+	        $.getJSON('/xhr/'+this.value+'/content', function(data){
+	        	fileNameArray = [];
+	        	for (var key in data) {
+	        		fileNameArray.push(key)
+        		}
+	            biocloud.setFiles(data);
+            	biocloud.setParameters(fileNameArray);
+	        });
+        }
     });
 });

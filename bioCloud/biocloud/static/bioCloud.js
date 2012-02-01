@@ -133,7 +133,8 @@ biocloud = {
         for(i=0;i < aProgramSpec.parameters.length; i++){
             this.parameters
                 .push(new biocloud.Parameter(i,aProgramSpec.parameters[i][0],
-                    aProgramSpec.parameters[i][1],aProgramSpec.parameters[i][2]));
+                    aProgramSpec.parameters[i][1],aProgramSpec.parameters[i][2],
+                    aProgramSpec.parameters[i][3],aProgramSpec.parameters[i][4]));
         }
     },
     InputFile: function(index, name){
@@ -146,11 +147,13 @@ biocloud = {
         this.name = name;
         this.fieldIndex = fieldIndex;
     },
-    Parameter: function(index,name,flag,flagtype){
+    Parameter: function(index,name,flag,flagtype,compulsory,defaultvalue){
         this.index = index;
         this.name = name;
         this.flag = flag;
         this.flagtype = flagtype;
+        this.compulsory = compulsory;
+        this.defaultvalue = defaultvalue;
     }
 };
 
@@ -168,10 +171,14 @@ biocloud.Program.prototype = {
         /* Taavi testing parameters */
         aBox.append("Choose parameters<br />")
          jQuery.each(this.parameters, function(i, each){
+             
+             if (each.flag!="") {
+             	$('<input type="checkbox" name="program.'+id+'.parameter.'+each.index+'.flag" value="'+each.flag+'" checked>').appendTo(aBox);
+             }
              aBox.append(each.name);
-             $('<input type="checkbox" name="program.'+id+'.parameter.'+each.index+'.flag" value="'+each.flag+'" checked>').appendTo($("<li></li>").appendTo(aBox));
              if (each.flagtype=="var") {
-                 $('<input type="text" class="parameter" name="program.'+id+'.parameter.'+each.index+'.value" />').appendTo($("<li></li>").appendTo(aBox));
+	             aBox.append("<br />")
+                 $('<input type="text" class="parameter" name="program.'+id+'.parameter.'+each.index+'.value" value="'+each.defaultvalue+'" />').appendTo(aBox);
              }
         })
     }

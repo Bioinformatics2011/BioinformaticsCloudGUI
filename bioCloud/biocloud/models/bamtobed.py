@@ -41,7 +41,9 @@ class BamToBed(Program):
     @classmethod
     def parameters(cls):
         # currently just a simple list of lists [["name","flag","type"],...] where type can be either flag or variable
-        return [["edit distance","-ed","flag"],["to bedpe","-bedpe","flag"],["test variable submit","-testvar","var"]]
+        return [["edit distance","-ed","flag",False,""],
+                ["to bedpe","-bedpe","flag",False,""],
+                ["test variable submit","-testvar","var",False,""]]
 
     @classmethod
     def homepage(cls):

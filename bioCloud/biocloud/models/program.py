@@ -38,8 +38,9 @@ class Program():
         # TODO validate?
         self.output = outputs
         
-    def setOutput(self, i, fileName):
+    def setOutput(self, i, fileName): 
         # TODO validate?
+        # XXX Duplicated signature
         self.output[i] = fileName
         
     def setParam(self, i, param, separator=" "):

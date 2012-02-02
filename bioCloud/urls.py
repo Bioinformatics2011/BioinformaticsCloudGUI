@@ -18,5 +18,6 @@ urlpatterns = patterns('',
     url(r'^workflow/$', 'biocloud.views.workflow'),
     url(r'^xhr/createProjectFolder$', 'biocloud.views.xhr_createProjectFolder'),
     url(r'^xhr/xhr_upload/$', "biocloud.views.xhr_upload", name="xhr_upload"),
-    url(r'^xhr/([^/|]+)/content$', 'biocloud.views.xhr_folderContents')
+    url(r'^xhr/([^/|]+)/content$', 'biocloud.views.xhr_folderContents'),
+    url(r'^xhr/([^/|]+)/filecontent$', 'biocloud.views.xhr_fileContent'),
 )

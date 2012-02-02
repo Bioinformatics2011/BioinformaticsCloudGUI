@@ -139,6 +139,26 @@ def xhr_folderContents(request, projectName):
         return HttpResponse(simplejson.dumps(file_info_map))
     else:
         return HttpResponse("Project does not exist.")
+
+def xhr_fileContent(request, projectName):
+    print 'xhr_fileContent'
+    fileName = request.GET['file']
+    fileName = fileName.replace('/','')
+    projectName = projectName.replace('/','')
+    path = settings.PROJECT_FOLDER + projectName + "/"+fileName
+    print 'path = '+path
+    if not os.path.isfile(path):
+        return HttpResponse("No such file.")
+    
+    f = open(path, 'r+')
+    content = ''
+    # XXX i am not sure about efficiency, and how to hadle if file is onlye one really big line
+    for x in range(0, 100):
+        content += f.readline() 
+
+    print 'result = '+content
+    ret_json = {'content':content,}
+    return HttpResponse(json.dumps(ret_json))
        
 def __importClass__(someString):
     (module, className) = someString.rsplit('.', 1)

@@ -30,12 +30,29 @@ biocloud = {
             aSelectNode.append("<option>"+each+"</option>")
         });
     },
+    
+    showFileContent: function(fileName) {
+	    if ($('#currentProject')[0].value == '') {// no selected project
+	    	biocloud.setFiles([]);
+	    } else {
+	    	$('#file-title')[0].innerHTML = "<b>"+fileName+"</b>";
+	    	$('#file-content')[0].innerHTML = "";
+	    	$.getJSON('/xhr/'+$('#currentProject')[0].value+'/filecontent?file='+fileName, function(data){
+				$.each(data, function(key, val) {
+					document.getElementById('file-content').appendChild(document.createTextNode(val));
+				});
+			});
+		}
+    },
+    
     fillWithFiles: function(fileTable){
     	if (fileTable != null){
     		fileTable.innerHTML = "<tr> <th>File</th> <th>Size</th> <th>Action</th> </tr>";
     		for (key in this.files) {
-    			fileTable.innerHTML += "<tr><td>"+key+"</td><td>"+this.files[key]['fsize']+" KB </td><td>" +
-    					"<a href=\"#\" onClick=\"alert('not implemented yet');\"> DELETE </a> | <a href=\"#\"> VIEW </a> | <a href=\"#\"> DOWNLOAD </a> </td></tr>"
+    			fileTable.innerHTML += "<tr><td>"+key+"</td><td>"+this.files[key]['fsize']+" KB </td><td>"+
+    					"<a href=\"#\" onClick=\"alert('not implemented yet');\"> DELETE </a> | "+
+    					"<a href=\"#\" onClick=\"biocloud.showFileContent('"+key+"');\"> VIEW </a> |"+
+    					"<a href=\"#\"> DOWNLOAD </a> </td></tr>"
     		}
     	}
     },
@@ -83,7 +100,6 @@ biocloud = {
     },
     
     refreshData: function(){
-    	
     	if ($('#currentProject')[0].value == '') {// no selected project
     		biocloud.setFiles([]);
         } else {

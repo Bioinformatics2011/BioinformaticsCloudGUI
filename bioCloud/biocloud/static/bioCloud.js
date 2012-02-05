@@ -45,6 +45,21 @@ biocloud = {
 		}
     },
     
+    deleteFile: function(fileName) {
+    	 if ($('#currentProject')[0].value == '') {// no selected project
+ 	    	biocloud.setFiles([]);
+ 	    } else {
+ 	    	$.ajax({
+ 	    		  url: '/xhr/'+$('#currentProject')[0].value+'/filedelete?file='+fileName,
+ 	    		  context: document.body,
+ 	    		  success: function(){
+ 	    		    alert("File "+fileName+" deleted");
+ 	    		    biocloud.refreshData();
+ 	    		  }
+ 	    		});
+ 	    }
+    },
+    
     fillWithFiles: function(fileTable){
     	if (fileTable != null){
     		fileTable.innerHTML = "<tr> <th>File</th> <th>Size</th> <th>Action</th> </tr>";
@@ -52,7 +67,7 @@ biocloud = {
     			fileTable.innerHTML += "<tr><td>"+key+"</td><td>"+this.files[key]['fsize']+" KB </td><td>"+
     					"<a href=\"#\" onClick=\"biocloud.showFileContent('"+key+"');\"><img src=\"/static/img/view.jpeg\" alt=\"View\"/> </a>"+
     					"<a href=\"/download?project="+$('#currentProject')[0].value+"&file="+key+"\"><img src=\"/static/img/download.png\" alt=\"Download\" /></a> "+
-    					"<a href=\"#\" onClick=\"alert('not implemented yet');\"><img src=\"/static/img/del.png\" alt=\"Delete\"/></a> </td></tr>";
+    					"<a href=\"#\" onClick=\"biocloud.deleteFile('"+key+"');\"><img src=\"/static/img/del.png\" alt=\"Delete\"/></a> </td></tr>";
     		}
     	}
     },
@@ -199,7 +214,8 @@ biocloud.Program.prototype = {
         })
     }
 };
-// create a block context, to avoid cluttering the global namespace with the fileprototype
+// create a block context, to avoid cluttering the global namespace with the
+// fileprototype
 (function (){
     var fileprototype = {
         renderTo: function(aBox, id){

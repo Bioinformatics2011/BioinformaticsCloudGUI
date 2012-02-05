@@ -170,7 +170,17 @@ def xhr_fileContent(request, projectName):
         content += f.readline() 
     ret_json = {'content':content,}
     return HttpResponse(json.dumps(ret_json))
-       
+
+def xhr_fileDelete(request, projectName):
+    fileName = request.GET['file']
+    fileName = fileName.replace('/','')
+    projectName = projectName.replace('/','')
+    path = settings.PROJECT_FOLDER + projectName + "/"+fileName
+    if not os.path.isfile(path):
+        return HttpResponse("No such file.")
+    os.remove(path)
+    return HttpResponse("File deleted")
+    
 def __importClass__(someString):
     (module, className) = someString.rsplit('.', 1)
     Module = __import__(module, globals(), locals(), [className])

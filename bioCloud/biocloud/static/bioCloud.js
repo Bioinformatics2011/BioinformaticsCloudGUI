@@ -50,9 +50,9 @@ biocloud = {
     		fileTable.innerHTML = "<tr> <th>File</th> <th>Size</th> <th>Action</th> </tr>";
     		for (key in this.files) {
     			fileTable.innerHTML += "<tr><td>"+key+"</td><td>"+this.files[key]['fsize']+" KB </td><td>"+
-    					"<a href=\"#\" onClick=\"alert('not implemented yet');\"> DELETE </a> | "+
-    					"<a href=\"#\" onClick=\"biocloud.showFileContent('"+key+"');\"> VIEW </a> |"+
-    					"<a href=\"#\"> DOWNLOAD </a> </td></tr>"
+    					"<a href=\"#\" onClick=\"biocloud.showFileContent('"+key+"');\"><img src=\"/static/img/view.jpeg\" alt=\"View\"/> </a>"+
+    					"<a href=\"/download?project="+$('#currentProject')[0].value+"&file="+key+"\"><img src=\"/static/img/download.png\" alt=\"Download\" /></a> "+
+    					"<a href=\"#\" onClick=\"alert('not implemented yet');\"><img src=\"/static/img/del.png\" alt=\"Delete\"/></a> </td></tr>";
     		}
     	}
     },

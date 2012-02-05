@@ -14,6 +14,7 @@ import json
 import stat 
 from django.views.decorators.csrf import csrf_exempt  
 from io import BufferedWriter, FileIO
+from django.core.servers.basehttp import FileWrapper
 
 def index(request):
     return render_to_response('biocloud/index.html', context_instance=RequestContext(request))
@@ -140,23 +141,33 @@ def xhr_folderContents(request, projectName):
     else:
         return HttpResponse("Project does not exist.")
 
+def download(request):
+    fileName = request.GET['file']
+    fileName = fileName.replace('/','')
+    projectName = request.GET['project']
+    projectName = projectName.replace('/','')
+    path = settings.PROJECT_FOLDER + projectName + "/"+fileName
+    if not os.path.isfile(path):
+        return HttpResponse("No such file.")
+    wrapper = FileWrapper(open(path))
+    response = HttpResponse(wrapper, content_type='application/x-msdownload')
+    response['Content-Length'] = os.path.getsize(path)
+    response['Content-Disposition'] = 'attachment; filename='+fileName
+    return response
+
 def xhr_fileContent(request, projectName):
-    print 'xhr_fileContent'
     fileName = request.GET['file']
     fileName = fileName.replace('/','')
     projectName = projectName.replace('/','')
     path = settings.PROJECT_FOLDER + projectName + "/"+fileName
-    print 'path = '+path
     if not os.path.isfile(path):
         return HttpResponse("No such file.")
     
     f = open(path, 'r+')
     content = ''
-    # XXX i am not sure about efficiency, and how to hadle if file is onlye one really big line
+    # XXX i am not sure about efficiency, and how to hadle if file is only one really big line
     for x in range(0, 100):
         content += f.readline() 
-
-    print 'result = '+content
     ret_json = {'content':content,}
     return HttpResponse(json.dumps(ret_json))
        

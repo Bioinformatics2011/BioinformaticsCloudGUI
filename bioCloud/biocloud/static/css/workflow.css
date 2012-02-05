@@ -1,53 +1,80 @@
-div.program{
-    border: 2px solid black;
-    padding: 0.5em;
-    margin: 0.5em 0;
-}
-.program .parameters{
-    padding: 0.5em 0;
-    margin: 0.5em 0;
-}
-.program ul.parameters{
-    list-style-type: none;
-}
-.program .parameters li{
-    padding: 0.3em 0;
-}
-.program .removeProgram{
-    float: right;
+div.program {
+	border: 2px solid black;
+	padding: 0.5em;
+	margin: 0.5em 0;
 }
 
-.parameters input.commandline{
-    heigth: 20px;
-    width: 90%;
-    margin: 0 auto;
-    text-align: center;
+.program .parameters {
+	padding: 0.5em 0;
+	margin: 0.5em 0;
 }
-li.homepage, form#newProject{
-    float: right;
+
+.program ul.parameters {
+	list-style-type: none;
+}
+
+.program .parameters li {
+	padding: 0.3em 0;
+}
+
+.program .removeProgram {
+	float: right;
+}
+
+.parameters input.commandline {
+	heigth: 20px;
+	width: 90%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+li.homepage,form#newProject {
+	float: right;
 }
 
 #progress_container {
-    font-size: .9em;
-    width: 100%;
-    height: 1.25em;
-    position: relative;
-    margin: 3em 0;
-    display: none;
+	font-size: .9em;
+	width: 100%;
+	height: 1.25em;
+	position: relative;
+	margin: 3em 0;
+	display: none;
+}
+
+#uploaded-files-table {
+	border: 1px solid #000;
+	border-collapse: collapse;
+	font-family: arial, sans-serif;
+	font-size: 80%;
+}
+
+#uploaded-files-table td,th {
+	border: 1px solid #000;
+	border-collapse: collapse;
+	padding: 5px;
+}
+
+#uploaded-files-table caption {
+	background: #ccc;
+	font-size: 140%;
+	border: 1px solid #000;
+	border-bottom: none;
+	padding: 5px;
+	text-align: left;
 }
 
 #progress_filename {
-    font-size: .9em;
-    width: 100%;
+	font-size: .9em;
+	width: 100%;
 }
 
 #progress_bar {
-    width: 100%;
-    border: 1px solid #999;
+	width: 100%;
+	border: 1px solid #999;
 }
 
 #progress_indicator {
-    background: #8a9;
-    width: 0;
-    height: 4px;
+	background: #8a9;
+	width: 0;
+	height: 4px;
 }
